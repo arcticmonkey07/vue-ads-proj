@@ -29,6 +29,14 @@ export default {
     loadAds(state, payload) {
       state.ads = payload;
     },
+    updateAd(state, {title, description, id}) {
+      const ad = state.ads.find(a => {
+        return a.id === id
+      })
+
+      ad.title = title
+      ad.description = description
+    }
   },
   actions: {
     async createAd({ commit, getters }, payload) {
@@ -62,7 +70,7 @@ export default {
         })
 
         commit('setLoading', false);
-        commit('createAd', {
+        commit('createAd', { // создаем мутацию createAd
           ...newAd,
           id: ad.key,
           imageSrc: imageSrc
@@ -99,7 +107,7 @@ export default {
             )
           );
         });
-        commit('loadAds', resultAds);
+        commit('loadAds', resultAds); // создаём мутацию loadAds
         commit('setLoading', false);
       } catch (error) {
         commit('setError', error.message);
@@ -107,6 +115,24 @@ export default {
         throw error;
       }
     },
+    async updatedAd({ commit }, {title, description, id}) {
+      commit('clearError')
+      commit('setLoading', true)
+
+      try {
+        await firebase.database().ref('ads').child(id).update({
+          title, description
+        })
+        commit('updateAd', { // создаём мутацию updateAd
+          title, description, id
+        })
+        commit('setLoading', false)
+      } catch (error) {
+        commit('setError', error.message)
+        commit('setLoading', false)
+        throw error
+      }
+    }
   },
   getters: {
     ads(state) {
@@ -117,8 +143,10 @@ export default {
         return ad.promo;
       });
     },
-    myAds(state) {
-      return state.ads;
+    myAds(state, getters) {
+      return state.ads.filter(ad => {
+        return ad.ownerId === getters.user.id
+      })
     },
     adById(state) {
       return (adId) => {

@@ -49,9 +49,6 @@
               <v-icon left>mdi-exit-to-app</v-icon>
               Logout
             </v-btn>
-            <v-btn @click="test">
-              test
-            </v-btn>
           </v-toolbar-items>
         </v-toolbar>
       </v-toolbar>
@@ -81,8 +78,6 @@
 </template>
 
 <script>
-import firebase from 'firebase';
-
 export default {
   data() {
     return {
@@ -122,15 +117,6 @@ export default {
     onLogout() {
       this.$store.dispatch('logoutUser');
       this.$router.push('/');
-    },
-    test() {
-      const imageMy = firebase.storage().ref().child('ads/myimage.jpg')
-        .getDownloadURL()
-        .then((url) => {
-          console.log(url, 'url')
-        });
-
-      console.log(imageMy, 'imageMy');
     },
   },
 };

@@ -37,12 +37,10 @@
 
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="gray" :to="'/ad/' + ad.id">
+              <v-btn color="secondary" :to="'/ad/' + ad.id">
                 Open
               </v-btn>
-              <v-btn color="primary">
-                Buy
-              </v-btn>
+              <app-buy-modal :ad="ad"></app-buy-modal>
             </v-card-actions>
           </v-card>
         </v-flex>
